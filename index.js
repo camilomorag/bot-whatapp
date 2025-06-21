@@ -12,6 +12,9 @@ app.post('/mensaje', async (req, res) => {
   if (!mensaje) {
     return res.status(400).json({ error: 'Falta el mensaje en el cuerpo de la solicitud' });
   }
+app.get("/", (req, res) => {
+  res.send("Servidor WhatsApp Bot activo ✅");
+});
 
   try {
     const respuesta = await fetch(SCRIPT_URL, {
