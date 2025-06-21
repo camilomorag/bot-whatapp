@@ -1,39 +1,34 @@
-const express = require('express');
-const fetch = require('node-fetch');
-const app = express();
+import express from 'express';
+import fetch from 'node-fetch';
 
+const app = express();
 app.use(express.json());
 
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwGZ68JYS81yiSCDZX2ifyWY25D2PXxMQunB6ymt3w1KkD7_KIJdxLCMUV4wwbQi7Vd/exec';
+
 app.post('/mensaje', async (req, res) => {
-  const mensaje = (req.body.mensaje || '').toLowerCase();
+  const { mensaje } = req.body;
 
-  if (mensaje.includes('cuánto cuesta') || mensaje.includes('precio')) {
-    const partes = mensaje.split(' ');
-    const producto = partes[partes.length - 1]; // última palabra
+  if (!mensaje) {
+    return res.status(400).json({ error: 'Falta el mensaje en el cuerpo de la solicitud' });
+  }
 
-    try {
-      const url = `https://script.google.com/macros/s/AKfycbwpolH9evQeQXSa_lKO4ogRseRpXzZtvQ-LODP9yGBVquogWsATXxBQPQHhirMMltwX/exec?producto=${encodeURIComponent(producto)}`;
-      const response = await fetch(url);
-      const data = await response.json();
+  try {
+    const respuesta = await fetch(SCRIPT_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ mensaje })
+    });
 
-      if (data.exito) {
-        const respuesta = `🧴 *${data.Producto}* (${data.Marca})\n💰 Precio: $${data.Precio}\n📦 Estado: ${data.Disponibilidad}\n📝 ${data.Descripcion}`;
-        return res.json({ respuesta, imagen: data.imagen });
-      } else {
-        return res.json({ respuesta: `❌ Producto "${producto}" no encontrado.` });
-      }
+    const data = await respuesta.json();
+    res.json({ respuesta: data.respuesta });
 
-    } catch (err) {
-      console.error(err);
-      return res.json({ respuesta: '⚠️ Error al consultar la hoja de productos.' });
-    }
-
-  } else {
-    return res.json({ respuesta: '🤖 Hola, puedes escribirme por ejemplo: "¿Cuánto cuesta ésika?"' });
+  } catch (error) {
+    console.error('Error al llamar al Apps Script:', error);
+    res.status(500).json({ respuesta: 'Error interno del servidor.' });
   }
 });
 
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-  console.log(`✅ Servidor escuchando en http://localhost:${PORT}/mensaje`);
+app.listen(3000, () => {
+  console.log('✅ Servidor escuchando en http://localhost:3000/mensaje');
 });
