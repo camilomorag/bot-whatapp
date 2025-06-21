@@ -4,7 +4,7 @@ import fetch from 'node-fetch';
 const app = express();
 app.use(express.json());
 
-const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwGZ68JYS81yiSCDZX2ifyWY25D2PXxMQunB6ymt3w1KkD7_KIJdxLCMUV4wwbQi7Vd/exec';
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbw_qvYtkBOau-uKgGs8U6ryQ-q-rcBpQv7WHFoDFG3MUACqxuVAfr4b_DWtOil4Fcxm/exec';
 
 app.post('/mensaje', async (req, res) => {
   const { mensaje } = req.body;
