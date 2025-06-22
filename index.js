@@ -27,13 +27,13 @@ app.post('/mensaje', async (req, res) => {
       body: JSON.stringify({ mensaje })
     });
 
-   const texto = data.respuesta || "No tengo una respuesta en este momento.";
+    const data = await respuesta.json();
+    const texto = data.respuesta || "No tengo una respuesta en este momento.";
 
-// 🔽 Dividir en partes si es muy largo
-const partes = texto.match(/.{1,1000}/g); // hasta 1000 caracteres por parte
+    // 🔽 Dividir en partes si es muy largo
+    const partes = texto.match(/.{1,1000}/g);
 
-return res.json({ replies: partes });
-
+    return res.json({ replies: partes });
 
   } catch (error) {
     console.error('❌ Error al llamar al Apps Script:', error);
