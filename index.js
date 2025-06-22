@@ -17,7 +17,9 @@ app.post('/mensaje', async (req, res) => {
   const mensaje = req.body?.mensaje || req.body?.query?.message;
 
   if (!mensaje || mensaje.trim().length < 2) {
-    return res.json({ message: "Por favor escribe una pregunta más clara 😊" });
+    return res.json({
+      replies: ["Por favor escribe una pregunta más clara 😊"]
+    });
   }
 
   try {
@@ -29,14 +31,16 @@ app.post('/mensaje', async (req, res) => {
 
     const data = await respuesta.json();
     const texto = data.respuesta || "No tengo una respuesta en este momento.";
-    const corto = texto.slice(0, 1500);
+    const corto = texto.slice(0, 1500); // Limita a 1500 caracteres por si acaso
 
-    return res.json({ message: corto });
+    return res.json({
+      replies: [corto]
+    });
 
   } catch (error) {
     console.error('❌ Error al llamar al Apps Script:', error);
     return res.status(500).json({
-      message: "Ocurrió un error interno al consultar la información."
+      replies: ["Ocurrió un error interno al consultar la información."]
     });
   }
 });
