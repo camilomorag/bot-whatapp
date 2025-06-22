@@ -14,7 +14,6 @@ app.get("/", (req, res) => {
 app.post('/mensaje', async (req, res) => {
   console.log('📩 Cuerpo recibido:', req.body);
 
-  // 👉 Captura correcta del mensaje desde AutoResponder
   const mensaje = req.body?.mensaje || req.body?.query?.message;
 
   if (!mensaje) {
@@ -29,11 +28,16 @@ app.post('/mensaje', async (req, res) => {
     });
 
     const data = await respuesta.json();
-    return res.json({ respuesta: data.respuesta });
+    const texto = data.respuesta || "No tengo una respuesta en este momento.";
+
+    // 👉 AutoResponder espera este formato:
+    return res.json({ replies: [texto] });
 
   } catch (error) {
     console.error('❌ Error al llamar al Apps Script:', error);
-    return res.status(500).json({ respuesta: 'Error interno del servidor.' });
+    return res.status(500).json({
+      replies: ["Ocurrió un error interno al consultar la información."]
+    });
   }
 });
 
