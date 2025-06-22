@@ -3,21 +3,19 @@ import fetch from 'node-fetch';
 
 const app = express();
 app.use(express.json());
-app.use(express.urlencoded({ extended: true })); // Para recibir datos en otros formatos
+app.use(express.urlencoded({ extended: true }));
 
 const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbw-csU5yUZY7ZHcJbrWEuggkWwaJ7Yj6pxSWItPYoLN-I5C5PaTi6xO4vhaL0KMzDNI/exec';
 
-// ✅ Ruta raíz para saber si está vivo
 app.get("/", (req, res) => {
   res.send("Servidor WhatsApp Bot activo ✅");
 });
 
-// ✅ Ruta para recibir el mensaje del AutoResponder
 app.post('/mensaje', async (req, res) => {
   console.log('📩 Cuerpo recibido:', req.body);
 
-  // Acepta diferentes formas en que puede llegar el mensaje
-  const mensaje = req.body?.mensaje || req.body?.body || req.body?.text || null;
+  // 👉 Captura correcta del mensaje desde AutoResponder
+  const mensaje = req.body?.mensaje || req.body?.query?.message;
 
   if (!mensaje) {
     return res.status(400).json({ error: 'Falta el mensaje en el cuerpo de la solicitud' });
