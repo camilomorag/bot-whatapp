@@ -17,9 +17,7 @@ app.post('/mensaje', async (req, res) => {
   const mensaje = req.body?.mensaje || req.body?.query?.message;
 
   if (!mensaje || mensaje.trim().length < 2) {
-    return res.json({
-      replies: [{ text: "Por favor escribe una pregunta un poco más clara 😊" }]
-    });
+    return res.json({ message: "Por favor escribe una pregunta más clara 😊" });
   }
 
   try {
@@ -31,17 +29,14 @@ app.post('/mensaje', async (req, res) => {
 
     const data = await respuesta.json();
     const texto = data.respuesta || "No tengo una respuesta en este momento.";
+    const corto = texto.slice(0, 1500);
 
-    // 🔁 Dividir en partes de 1000 caracteres y formatear como objetos
-    const partes = texto.match(/.{1,1000}/g) || ["Respuesta vacía."];
-    const replies = partes.map(p => ({ text: p }));
-
-    return res.json({ replies });
+    return res.json({ message: corto });
 
   } catch (error) {
     console.error('❌ Error al llamar al Apps Script:', error);
     return res.status(500).json({
-      replies: [{ text: "Ocurrió un error interno al consultar la información." }]
+      message: "Ocurrió un error interno al consultar la información."
     });
   }
 });
