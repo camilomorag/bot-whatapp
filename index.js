@@ -27,11 +27,13 @@ app.post('/mensaje', async (req, res) => {
       body: JSON.stringify({ mensaje })
     });
 
-    const data = await respuesta.json();
-    const texto = data.respuesta || "No tengo una respuesta en este momento.";
+   const texto = data.respuesta || "No tengo una respuesta en este momento.";
 
-    // 👉 AutoResponder espera este formato:
-    return res.json({ replies: [texto] });
+// 🔽 Dividir en partes si es muy largo
+const partes = texto.match(/.{1,1000}/g); // hasta 1000 caracteres por parte
+
+return res.json({ replies: partes });
+
 
   } catch (error) {
     console.error('❌ Error al llamar al Apps Script:', error);
