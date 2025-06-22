@@ -5,7 +5,7 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbw-csU5yUZY7ZHcJbrWEuggkWwaJ7Yj6pxSWItPYoLN-I5C5PaTi6xO4vhaL0KMzDNI/exec';
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbw4mWOXL0Lcl5S8pnFeCcz6Hgg6XkeSdfYsTrmZu799LVPnfEkEIbAukLalVncSGBbj/exec';
 
 app.get("/", (req, res) => {
   res.send("Servidor WhatsApp Bot activo ✅");
