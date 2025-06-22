@@ -5,7 +5,7 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbw4mWOXL0Lcl5S8pnFeCcz6Hgg6XkeSdfYsTrmZu799LVPnfEkEIbAukLalVncSGBbj/exec';
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwyB4S_ZwJYUueqtfQnRaoZB7UxNVDbK1msIlIoDzDNBKVQqR3QaAFLgewvXz9otaZY/exec';
 
 app.get("/", (req, res) => {
   res.send("Servidor WhatsApp Bot activo ✅");
@@ -17,9 +17,7 @@ app.post('/mensaje', async (req, res) => {
   const mensaje = req.body?.mensaje || req.body?.query?.message;
 
   if (!mensaje || mensaje.trim().length < 2) {
-    return res.json({
-      replies: ["Por favor escribe una pregunta más clara 😊"]
-    });
+    return res.json({ message: "Por favor escribe una pregunta más clara 😊" });
   }
 
   try {
@@ -31,16 +29,14 @@ app.post('/mensaje', async (req, res) => {
 
     const data = await respuesta.json();
     const texto = data.respuesta || "No tengo una respuesta en este momento.";
-    const corto = texto.slice(0, 1500); // Limita a 1500 caracteres por si acaso
+    const corto = texto.slice(0, 1500);
 
-    return res.json({
-      replies: [corto]
-    });
+    return res.json({ message: corto });
 
   } catch (error) {
     console.error('❌ Error al llamar al Apps Script:', error);
     return res.status(500).json({
-      replies: ["Ocurrió un error interno al consultar la información."]
+      message: "Ocurrió un error al consultar la información."
     });
   }
 });
